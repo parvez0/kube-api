@@ -10,6 +10,24 @@ import (
 	"time"
 )
 
+// GetDeployment returns a deployment from the given namespace or returns an error
+func (c *KubeClientSet) GetDeployment(ns string, deploy string, opts v1.GetOptions) (*v12.Deployment, error) {
+	client := c.GetDeploymentClient(ns)
+	return client.Get(context.TODO(), deploy, opts)
+}
+
+// GetDeployment returns a deployment from the given namespace or returns an error
+func (c *KubeClientSet) ListDeployment(ns string, deploy string, opts v1.ListOptions) (*v12.DeploymentList, error) {
+	client := c.GetDeploymentClient(ns)
+	return client.List(context.TODO(), opts)
+}
+
+// CreateDeployment creates a deployment and returns response or error if not created
+func (c *KubeClientSet) CreateDeployment(ns string, body *v12.Deployment, opts v1.CreateOptions) (*v12.Deployment, error) {
+	client := c.GetDeploymentClient(ns)
+	return client.Create(context.TODO(), body, opts)
+}
+
 func (c *KubeClientSet) PatchDeployment(ns string, deployment string, patchType types.PatchType, data []byte, patchOptions v1.PatchOptions, subresource string) (*v12.Deployment, error) {
 	client := c.GetDeploymentClient(ns)
 	if patchType == "" {

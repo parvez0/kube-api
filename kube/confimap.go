@@ -7,6 +7,21 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
+func (c *KubeClientSet)GetCM(ns string, name string, opts v1.GetOptions) (*v12.ConfigMap, error) {
+	client := c.GetCMClient(ns)
+	return client.Get(context.TODO(), name, opts)
+}
+
+func (c *KubeClientSet)ListCM(ns string, opts v1.ListOptions) (*v12.ConfigMapList, error) {
+	client := c.GetCMClient(ns)
+	return client.List(context.TODO(), opts)
+}
+
+func (c *KubeClientSet)CreateCM(ns string, name string, cm *v12.ConfigMap, opts v1.CreateOptions)(*v12.ConfigMap, error)  {
+	client := c.GetCMClient(ns)
+	return client.Create(context.TODO(), cm, opts)
+}
+
 func (c *KubeClientSet)UpdateCM(namespace string, cm *v12.ConfigMap, options v1.UpdateOptions) (*v12.ConfigMap, error) {
 	client := c.GetCMClient(namespace)
 	return client.Update(context.TODO(), cm, options)
