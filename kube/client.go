@@ -1,9 +1,11 @@
 package kube
 
 import (
+	"context"
 	"fmt"
 	"k8s.io/client-go/kubernetes"
 	v1 "k8s.io/client-go/kubernetes/typed/apps/v1"
+	"k8s.io/client-go/kubernetes/typed/autoscaling/v2beta2"
 	v12 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -16,11 +18,12 @@ import (
 type KubeClientSet struct {
 	Client *kubernetes.Clientset
 	Config *rest.Config
+	Ctx    context.Context
 }
 
 // creating a kubernetes client object with the provided cluster name
 // it will return a wrapper for client and config which can be used to get other resource clients like deployments, namespace etc
-func CreateClient(context string) *KubeClientSet {
+func CreateClient(ctx context.Context, cluster string) *KubeClientSet {
 	var kubeconfig string
 	var config *rest.Config
 	var err error
@@ -41,7 +44,7 @@ func CreateClient(context string) *KubeClientSet {
 				ExplicitPath: kubeconfig,
 			},
 			&clientcmd.ConfigOverrides{
-				CurrentContext: context,
+				CurrentContext: cluster,
 			}).ClientConfig()
 		if err != nil {
 			panic(fmt.Sprintf("failed to create config from given config path - %+v", err))
@@ -56,7 +59,7 @@ func CreateClient(context string) *KubeClientSet {
 	if err != nil {
 		panic(fmt.Sprintf("failed to create client - %+v", err))
 	}
-	return &KubeClientSet{Client: client, Config: config}
+	return &KubeClientSet{Client: client, Config: config, Ctx: ctx}
 }
 
 // GetNamespaceClient returns a namespace client interface generated from KubeClientSet config
@@ -85,7 +88,11 @@ func (c *KubeClientSet) GetSVCClient(namespace string) v12.ServiceInterface {
 }
 
 // GetCMClient returns a config map client
-func (c *KubeClientSet)GetCMClient(namespace string) v12.ConfigMapInterface {
+func (c *KubeClientSet) GetCMClient(namespace string) v12.ConfigMapInterface {
 	return c.Client.CoreV1().ConfigMaps(namespace)
 }
 
+// GetHPAClient returns a config map client
+func (c *KubeClientSet) GetHPAClient(namespace string) v2beta2.HorizontalPodAutoscalerInterface {
+	return c.Client.AutoscalingV2beta2().HorizontalPodAutoscalers(namespace)
+}

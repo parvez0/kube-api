@@ -13,19 +13,19 @@ import (
 // GetDeployment returns a deployment from the given namespace or returns an error
 func (c *KubeClientSet) GetDeployment(ns string, deploy string, opts v1.GetOptions) (*v12.Deployment, error) {
 	client := c.GetDeploymentClient(ns)
-	return client.Get(context.TODO(), deploy, opts)
+	return client.Get(c.Ctx, deploy, opts)
 }
 
 // GetDeployment returns a deployment from the given namespace or returns an error
 func (c *KubeClientSet) ListDeployment(ns string, deploy string, opts v1.ListOptions) (*v12.DeploymentList, error) {
 	client := c.GetDeploymentClient(ns)
-	return client.List(context.TODO(), opts)
+	return client.List(c.Ctx, opts)
 }
 
 // CreateDeployment creates a deployment and returns response or error if not created
 func (c *KubeClientSet) CreateDeployment(ns string, body *v12.Deployment, opts v1.CreateOptions) (*v12.Deployment, error) {
 	client := c.GetDeploymentClient(ns)
-	return client.Create(context.TODO(), body, opts)
+	return client.Create(c.Ctx, body, opts)
 }
 
 func (c *KubeClientSet) PatchDeployment(ns string, deployment string, patchType types.PatchType, data []byte, patchOptions v1.PatchOptions, subresource string) (*v12.Deployment, error) {
@@ -33,7 +33,7 @@ func (c *KubeClientSet) PatchDeployment(ns string, deployment string, patchType 
 	if patchType == "" {
 		patchType = types.StrategicMergePatchType
 	}
-	return client.Patch(context.TODO(), deployment, patchType, data, patchOptions, subresource)
+	return client.Patch(c.Ctx, deployment, patchType, data, patchOptions, subresource)
 }
 
 func (c *KubeClientSet) RestartDeployment(ns string, deployment string) error {

@@ -9,20 +9,20 @@ import (
 
 func (c *KubeClientSet) GetService(ns string, svc string) (*v12.Service, error) {
 	client := c.GetSVCClient(ns)
-	return client.Get(context.TODO(), svc, v1.GetOptions{})
+	return client.Get(c.Ctx, svc, v1.GetOptions{})
 }
 
 func (c *KubeClientSet) CreateService(ns string, svc *v12.Service, opts v1.CreateOptions) (*v12.Service, error) {
 	client := c.GetSVCClient(ns)
-	return client.Create(context.TODO(), svc, opts)
+	return client.Create(c.Ctx, svc, opts)
 }
 
 func (c *KubeClientSet) DeleteService(ns string, svc string, delOptions v1.DeleteOptions) error {
 	client := c.GetSVCClient(ns)
-	return client.Delete(context.TODO(), svc, delOptions)
+	return client.Delete(c.Ctx, svc, delOptions)
 }
 
 func (c *KubeClientSet) WatchService(ns string, listOpts v1.ListOptions) (watch.Interface, error) {
 	client := c.GetSVCClient(ns)
-	return client.Watch(context.TODO(), listOpts)
+	return client.Watch(c.Ctx, listOpts)
 }
