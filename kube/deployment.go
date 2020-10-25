@@ -1,7 +1,6 @@
 package kube
 
 import (
-	"context"
 	"encoding/json"
 	v12 "k8s.io/api/apps/v1"
 	v13 "k8s.io/api/core/v1"

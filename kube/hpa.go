@@ -1,7 +1,6 @@
 package kube
 
 import (
-	"context"
 	"k8s.io/api/autoscaling/v2beta2"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
